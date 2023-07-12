@@ -17,5 +17,5 @@ export class AuthService {
 }
 
 interface User {
-  email: string | null | undefined;
+  email: string;
 }

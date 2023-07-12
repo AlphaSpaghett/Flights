@@ -51,15 +51,15 @@ export class RegisterPassengerComponent implements OnInit {
   }
 
   checkPassenger(): void {
-    const params: string = this.form.get('email')?.value as string;
+    const params = { email: this.form.get('email')?.value! };
 
     this.passengerService
-      .findPassenger({ email: params})
+      .findPassenger(params)
       .subscribe(
         this.login,
         e => {
           if (e.status != 404)
-            console.error(e)
+            console.error(e);
         }
       )
   }
@@ -77,7 +77,7 @@ export class RegisterPassengerComponent implements OnInit {
   }
 
   private login = () => {
-    this.auth.loginUser({ email: this.form.get('email')?.value });
+    this.auth.loginUser({ email: this.form.get('email')?.value! });
     this.router.navigate(['/search-flights']);
   }
 
