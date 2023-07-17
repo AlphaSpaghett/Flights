@@ -82,6 +82,8 @@ namespace Flights.Controllers
                 return Conflict(new { message = "Not enough seats available" });
             }
 
+            _entities.SaveChanges();
+
             return CreatedAtAction(nameof(Find), new { id = dto.FlightId });
 
         }
