@@ -5,6 +5,7 @@ using Flights.Domain.Entities;
 using Flights.DTOs;
 using Flights.Domain.Errors;
 using Flights.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Flights.Controllers
 {
@@ -82,7 +83,14 @@ namespace Flights.Controllers
                 return Conflict(new { message = "Not enough seats available" });
             }
 
-            _entities.SaveChanges();
+            try
+            {
+                _entities.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException e)
+            {
+                return Conflict(new { message = "An error occurred while booking. Please try again!" });
+            }
 
             return CreatedAtAction(nameof(Find), new { id = dto.FlightId });
 

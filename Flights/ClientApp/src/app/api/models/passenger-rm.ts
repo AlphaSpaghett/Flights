@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface PassengerRm {
-  email?: string;
+  email?: null | string;
   firstName?: null | string;
   gender?: boolean;
   lastName?: null | string;
