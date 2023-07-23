@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { User } from 'oidc-client';
-import { NewPassengerDto } from '../api/models';
+import { Router, ActivatedRoute } from '@angular/router';
 import { PassengerService } from '../api/services/passenger.service';
 import { AuthService } from '../auth/auth.service';
 
@@ -18,7 +16,10 @@ export class RegisterPassengerComponent implements OnInit {
     private fb: FormBuilder,
     private auth: AuthService,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
   ) { }
+
+  requestedUrl?: string = undefined;
 
   form = this.fb.group({
     email: [
@@ -48,6 +49,7 @@ export class RegisterPassengerComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.activatedRoute.params.subscribe(p => this.requestedUrl = p['requestedUrl'])
   }
 
   checkPassenger(): void {
@@ -78,7 +80,7 @@ export class RegisterPassengerComponent implements OnInit {
 
   private login = () => {
     this.auth.loginUser({ email: this.form.get('email')?.value! });
-    this.router.navigate(['/search-flights']);
+    this.router.navigate([this.requestedUrl ?? '/search-flights']);
   }
 
 

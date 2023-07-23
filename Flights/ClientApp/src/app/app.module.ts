@@ -31,7 +31,7 @@ import { MyFlightsComponent } from './my-flights/my-flights.component';
       { path: 'search-flights', component: SearchFlightsComponent},
       { path: 'book-flight/:flightId', component: BookFlightComponent, canActivate: [AuthGuard] },
       { path: 'register-passenger', component: RegisterPassengerComponent },
-      { path: 'my-flights', component: MyFlightsComponent },
+      { path: 'my-flights', component: MyFlightsComponent, canActivate: [AuthGuard] },
     ])
   ],
   providers: [],
