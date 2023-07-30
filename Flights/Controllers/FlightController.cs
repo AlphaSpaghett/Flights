@@ -27,9 +27,28 @@ namespace Flights.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<FlightRm>), 200)]
-        public IEnumerable<FlightRm> Search()
+        public IEnumerable<FlightRm> Search([FromQuery] FlightSearchParameters @params)
         {
-            var flightRmList = _entities.Flights.Select(flight => new FlightRm(
+
+            _logger.LogInformation("Searching for flights to {Destination}", @params.Destination);
+
+            IQueryable<Flight> flights = _entities.Flights;
+
+            if (!string.IsNullOrWhiteSpace(@params.Destination))
+                flights = flights.Where(f => f.Arrival.Place.Contains(@params.Destination));
+            if (!string.IsNullOrWhiteSpace(@params.Departure))
+                flights = flights.Where(f => f.Departure.Place.Contains(@params.Departure));
+            if (@params.FromDate != null)
+                flights = flights.Where(f => f.Departure.Time >= @params.FromDate.Value.Date);
+            if (@params.ToDate != null)
+                flights = flights.Where(f => f.Arrival.Time >= @params.ToDate.Value.Date.AddDays(1).AddTicks(-1));
+            if (@params.NumOfPassengers > 0 && @params.NumOfPassengers != null)
+                flights = flights.Where(f => f.RemainingSeats >= @params.NumOfPassengers);
+            else
+                flights = flights.Where(f => f.RemainingSeats >= 1);
+
+            var flightRmList = flights
+                .Select(flight => new FlightRm(
                 flight.Id,
                 flight.Airline,
                 flight.Price,
